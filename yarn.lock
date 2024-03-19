@@ -3298,7 +3298,7 @@ __metadata:
     "@mui/lab": "npm:^5.0.0-alpha.149"
     "@mui/material": "npm:^5.14.14"
     "@opensea/seaport-js": "npm:2.0.8"
-    "@tanstack/react-query": "npm:^4.36.1"
+    "@tanstack/react-query": "npm:^5.8.7"
     "@vitejs/plugin-react": "npm:^4.2.1"
     bignumber.js: "npm:^9.1.2"
     buffer: "npm:^6.0.3"
@@ -3358,7 +3358,7 @@ __metadata:
     "@mui/icons-material": "npm:^5.14.14"
     "@mui/lab": "npm:^5.0.0-alpha.149"
     "@mui/material": "npm:^5.14.14"
-    "@tanstack/react-query": "npm:^4.36.1"
+    "@tanstack/react-query": "npm:^5.8.7"
     "@tanstack/react-virtual": "npm:^3.0.0-beta.68"
     big.js: "npm:^6.2.1"
     cpy-cli: "npm:^5.0.0"
@@ -4794,6 +4794,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-core@npm:5.27.3":
+  version: 5.27.3
+  resolution: "@tanstack/query-core@npm:5.27.3"
+  checksum: 1753579709cbc20364d777feab8da4bd39a47f61b318ac1904561690b50180972b80dbb01839fa297f9e85ab137f018f27ea1607cedce57b68dbf82caec2c8c9
+  languageName: node
+  linkType: hard
+
 "@tanstack/query-persist-client-core@npm:4.36.1":
   version: 4.36.1
   resolution: "@tanstack/query-persist-client-core@npm:4.36.1"
@@ -4823,7 +4830,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:^4.28.0, @tanstack/react-query@npm:^4.36.1":
+"@tanstack/react-query@npm:^4.28.0":
   version: 4.36.1
   resolution: "@tanstack/react-query@npm:4.36.1"
   dependencies:
@@ -4839,6 +4846,17 @@ __metadata:
     react-native:
       optional: true
   checksum: 764b860c3ac8d254fc6b07e01054a0f58058644d59626c724b213293fbf1e31c198cbb26e4c32c0d16dcaec0353c0ae19147d9c667675b31f8cea1d64f1ff4ac
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^5.8.7":
+  version: 5.27.3
+  resolution: "@tanstack/react-query@npm:5.27.3"
+  dependencies:
+    "@tanstack/query-core": "npm:5.27.3"
+  peerDependencies:
+    react: ^18.0.0
+  checksum: bdbacc5161ddcbe8ab025b79d53236d263404f2f5305b4b1555aecbcce7b05ba002268cb67d5ee477663d7cc212e14ae02fcc45c4479347179c9d0a2eb7267a8
   languageName: node
   linkType: hard
 
