@@ -10,6 +10,7 @@ import { HiddenUI } from '../../types';
 
 export const LanguageSelect: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const { containerRef } = useWidgetConfig();
   const { languages, hiddenUI } = useWidgetConfig();
   const setValue = useSettingsStore((state) => state.setValue);
   const { language } = useSettings(['language']);
@@ -41,7 +42,7 @@ export const LanguageSelect: React.FC = () => {
       <CardTitle>{t(`language.title`)}</CardTitle>
       <FormControl fullWidth>
         <Select
-          MenuProps={{ elevation: 2 }}
+          MenuProps={{ elevation: 2, container: containerRef }}
           value={value}
           onChange={handleChangeLanguage}
           IconComponent={KeyboardArrowDownIcon}

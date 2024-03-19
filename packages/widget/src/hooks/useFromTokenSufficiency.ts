@@ -1,5 +1,5 @@
 import type { Route } from '@lifi/sdk';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
 import { useWatch } from 'react-hook-form';
 import { FormKey, useWallet } from '../providers';
@@ -27,15 +27,15 @@ export const useFromTokenSufficiency = (route?: Route) => {
 
   const { token, isLoading } = useTokenAddressBalance(chainId, tokenAddress);
 
-  const { data: insufficientFromToken, isInitialLoading } = useQuery(
-    [
+  const { data: insufficientFromToken, isInitialLoading } = useQuery({
+    queryKey: [
       'from-token-sufficiency-check',
       account.address,
       chainId,
       tokenAddress,
       route?.id ?? fromAmount,
     ],
-    async () => {
+    queryFn: async () => {
       if (!account.address || !token) {
         return;
       }
@@ -71,14 +71,12 @@ export const useFromTokenSufficiency = (route?: Route) => {
         .gt(currentTokenBalance);
       return insufficientFunds;
     },
-    {
-      enabled: Boolean(account.address && token && !isLoading),
-      refetchInterval,
-      staleTime: refetchInterval,
-      cacheTime: refetchInterval,
-      keepPreviousData: true,
-    },
-  );
+    enabled: Boolean(account.address && token && !isLoading),
+    refetchInterval,
+    staleTime: refetchInterval,
+    gcTime: refetchInterval,
+    placeholderData: keepPreviousData,
+  });
 
   return {
     insufficientFromToken,

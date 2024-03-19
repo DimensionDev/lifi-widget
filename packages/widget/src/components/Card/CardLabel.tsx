@@ -49,4 +49,5 @@ export const CardLabelTypography = styled(Typography, {
   '&::first-letter': {
     textTransform: 'uppercase',
   },
+  color: theme.palette.common.white,
 }));

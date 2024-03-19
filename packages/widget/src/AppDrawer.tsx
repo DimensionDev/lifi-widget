@@ -23,6 +23,10 @@ export interface WidgetDrawer {
   toggleDrawer(): void;
   openDrawer(): void;
   closeDrawer(): void;
+  navigateBack?: () => void;
+  isHome?: boolean;
+  navigateToTransaction?: () => void;
+  navigateToSettings?: () => void;
 }
 
 export const AppDrawer = forwardRef<WidgetDrawer, WidgetProps>(

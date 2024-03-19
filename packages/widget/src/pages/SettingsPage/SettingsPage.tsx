@@ -11,8 +11,7 @@ import { SlippageInput } from './SlippageInput';
 export const SettingsPage = () => {
   return (
     <Container disableGutters>
-      <Box px={3} pt={1}>
-        <ColorSchemeButtonGroup />
+      <Box>
         <LanguageSelect />
         <RoutePrioritySelect />
         <Box sx={{ display: 'flex', alignItems: 'center' }} mt={2}>
@@ -23,7 +22,7 @@ export const SettingsPage = () => {
         </Box>
       </Box>
       <ShowDestinationWallet />
-      <Box px={1.5}>
+      <Box>
         <EnabledToolsButton type="Bridges" />
         <EnabledToolsButton type="Exchanges" />
       </Box>

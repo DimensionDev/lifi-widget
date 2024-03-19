@@ -29,9 +29,9 @@ export const useGasSufficiency = (route?: Route) => {
   const { enabled, isLoading: isRefuelLoading } = useGasRefuel();
   const enabledRefuel = enabled && enabledAutoRefuel;
 
-  const { data: insufficientGas, isInitialLoading } = useQuery(
-    ['gas-sufficiency-check', account.address, route?.id],
-    async () => {
+  const { data: insufficientGas, isInitialLoading } = useQuery({
+    queryKey: ['gas-sufficiency-check', account.address, route?.id],
+    queryFn: async () => {
       if (!account.address || !route) {
         return;
       }
@@ -140,13 +140,11 @@ export const useGasSufficiency = (route?: Route) => {
 
       return gasCostResult;
     },
-    {
-      enabled: Boolean(account.address && route),
-      refetchInterval,
-      staleTime: refetchInterval,
-      cacheTime: refetchInterval,
-    },
-  );
+    enabled: Boolean(account.address && route),
+    refetchInterval,
+    staleTime: refetchInterval,
+    gcTime: refetchInterval,
+  });
 
   const isInsufficientGas =
     Boolean(insufficientGas?.length) && !isRefuelLoading && !enabledRefuel;

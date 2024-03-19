@@ -13,9 +13,9 @@ export const useGasRecommendation = (
   const lifi = useLiFi();
   const { chains } = useChains();
 
-  return useQuery(
-    ['gas-recommendation', chainId, fromChain, fromToken],
-    async ({ queryKey: [_, chainId, fromChain, fromToken] }) => {
+  return useQuery({
+    queryKey: ['gas-recommendation', chainId, fromChain, fromToken],
+    queryFn: async ({ queryKey: [_, chainId, fromChain, fromToken] }) => {
       if (!chains?.some((chain) => chain.id === chainId)) {
         return null;
       }
@@ -26,11 +26,9 @@ export const useGasRecommendation = (
       });
       return gasRecommendation;
     },
-    {
-      enabled: Boolean(chainId),
-      refetchInterval,
-      staleTime: refetchInterval,
-      cacheTime: refetchInterval,
-    },
-  );
+    enabled: Boolean(chainId),
+    refetchInterval,
+    staleTime: refetchInterval,
+    gcTime: refetchInterval,
+  });
 };

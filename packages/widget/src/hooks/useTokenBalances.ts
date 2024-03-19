@@ -3,6 +3,7 @@ import { useLiFi, useWallet } from '../providers';
 import type { TokenAmount } from '../types';
 import { useFeaturedTokens } from './useFeaturedTokens';
 import { useTokens } from './useTokens';
+import type { StaticToken } from '@lifi/sdk';
 
 const defaultRefetchInterval = 32_000;
 
@@ -21,9 +22,14 @@ export const useTokenBalances = (selectedChainId?: number) => {
     data: tokensWithBalance,
     isLoading: isBalanceLoading,
     refetch,
-  } = useQuery(
-    ['token-balances', account.address, selectedChainId, tokens?.length],
-    async ({ queryKey: [, accountAddress] }) => {
+  } = useQuery({
+    queryKey: [
+      'token-balances',
+      account.address,
+      selectedChainId,
+      tokens?.length,
+    ],
+    queryFn: async ({ queryKey: [, accountAddress] }) => {
       const tokenBalances = await lifi.getTokenBalances(
         accountAddress as string,
         tokens!,
@@ -66,12 +72,10 @@ export const useTokenBalances = (selectedChainId?: number) => {
       ];
       return result;
     },
-    {
-      enabled: isBalanceLoadingEnabled,
-      refetchInterval: defaultRefetchInterval,
-      staleTime: defaultRefetchInterval,
-    },
-  );
+    enabled: isBalanceLoadingEnabled,
+    refetchInterval: defaultRefetchInterval,
+    staleTime: defaultRefetchInterval,
+  });
 
   return {
     tokens,
@@ -80,5 +84,12 @@ export const useTokenBalances = (selectedChainId?: number) => {
     isLoading,
     isBalanceLoading: isBalanceLoading && isBalanceLoadingEnabled,
     refetch,
+  } as {
+    tokens: TokenAmount[];
+    tokensWithBalance?: TokenAmount[];
+    featuredTokens?: StaticToken[];
+    isLoading: boolean;
+    isBalanceLoading: boolean;
+    refetch: () => void;
   };
 };

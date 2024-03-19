@@ -102,15 +102,18 @@ export const useRouteExecution = ({
     return accepted;
   };
 
-  const executeRouteMutation = useMutation(
-    () => {
+  const executeRouteMutation = useMutation({
+    mutationFn: () => {
       if (!account.signer) {
         throw Error('Account signer not found.');
       }
       if (!routeExecution?.route) {
         throw Error('Execution route not found.');
       }
-      queryClient.removeQueries(['routes'], { exact: false });
+      queryClient.removeQueries({
+        queryKey: ['routes'],
+        exact: false,
+      });
       return lifi.executeRoute(account.signer, routeExecution.route, {
         updateRouteHook,
         switchChainHook,
@@ -119,18 +122,16 @@ export const useRouteExecution = ({
         executeInBackground,
       });
     },
-    {
-      onMutate: () => {
-        console.log('Execution started.', routeId);
-        if (routeExecution) {
-          emitter.emit(WidgetEvent.RouteExecutionStarted, routeExecution.route);
-        }
-      },
+    onMutate: () => {
+      console.log('Execution started.', routeId);
+      if (routeExecution) {
+        emitter.emit(WidgetEvent.RouteExecutionStarted, routeExecution.route);
+      }
     },
-  );
+  });
 
-  const resumeRouteMutation = useMutation(
-    (resumedRoute?: Route) => {
+  const resumeRouteMutation = useMutation({
+    mutationFn: (resumedRoute?: Route) => {
       if (!account.signer) {
         throw Error('Account signer not found.');
       }
@@ -149,12 +150,10 @@ export const useRouteExecution = ({
         },
       );
     },
-    {
-      onMutate: () => {
-        console.log('Resumed to execution.', routeId);
-      },
+    onMutate: () => {
+      console.log('Resumed to execution.', routeId);
     },
-  );
+  });
 
   const executeRoute = useCallback(() => {
     executeRouteMutation.mutateAsync(undefined, {

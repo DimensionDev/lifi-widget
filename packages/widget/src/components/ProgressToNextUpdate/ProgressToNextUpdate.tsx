@@ -61,13 +61,13 @@ export const ProgressToNextUpdate: React.FC<
             display: 'grid',
             position: 'relative',
             placeItems: 'center',
-            width: 24,
-            height: 24,
+            width: 16,
+            height: 16,
           }}
         >
           <CircularProgress
             variant="determinate"
-            size={24}
+            size={16}
             value={100}
             sx={(theme) => ({
               position: 'absolute',
@@ -79,7 +79,7 @@ export const ProgressToNextUpdate: React.FC<
           />
           <CircularProgress
             variant={isLoading ? 'indeterminate' : 'determinate'}
-            size={24}
+            size={16}
             value={value}
             sx={(theme) => ({
               opacity: value === 100 && !isLoading ? 0.5 : 1,

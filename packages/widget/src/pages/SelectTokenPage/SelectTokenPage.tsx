@@ -35,7 +35,7 @@ export const SelectTokenPage: FC<FormTypeProps> = ({ formType }) => {
 
   return (
     <Container disableGutters>
-      <Box pt={1} pb={2} px={3} ref={headerRef}>
+      <Box pt={1} pb={2} ref={headerRef}>
         {!hideChainSelect ? <ChainSelect formType={formType} /> : null}
         <Box mt={!hideChainSelect ? 2 : 0}>
           <SearchTokenInput />

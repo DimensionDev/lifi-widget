@@ -3,7 +3,6 @@ import { styled } from '@mui/material/styles';
 import { maxHeight } from '../AppContainer';
 
 export const CollapseContainer = styled(Box)(({ theme }) => ({
-  height: maxHeight,
   zIndex: 0,
 }));
 
@@ -14,25 +13,24 @@ export const ScrollableContainer = styled(Box)({
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
+  padding: '0 8px',
 });
 
 export const Container = styled(ScopedCssBaseline)(({ theme }) => ({
-  backgroundColor: theme.palette.background.default,
+  backgroundColor: 'transparent',
   overflow: 'auto',
-  width: 436,
-  maxHeight,
-  marginLeft: theme.spacing(3),
+  width: 276,
   display: 'flex',
   flexDirection: 'column',
 }));
 
 export const Header = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.background.default,
+  backgroundColor: 'transparent',
   backdropFilter: 'blur(12px)',
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  padding: theme.spacing(1.5, 3),
+  paddingBottom: theme.spacing(1.5),
   position: 'sticky',
   top: 0,
   zIndex: 1200,

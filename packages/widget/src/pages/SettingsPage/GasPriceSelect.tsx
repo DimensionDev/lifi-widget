@@ -4,9 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardTitle } from '../../components/Card';
 import { Select } from '../../components/Select';
 import { useSettings, useSettingsStore } from '../../stores';
+import { useWidgetConfig } from '@lifi/widget/providers';
 
 export const GasPriceSelect = () => {
   const { t } = useTranslation();
+  const { containerRef } = useWidgetConfig();
   const setValue = useSettingsStore((state) => state.setValue);
   const { gasPrice } = useSettings(['gasPrice']);
 
@@ -15,7 +17,7 @@ export const GasPriceSelect = () => {
       <CardTitle>{t(`settings.gasPrice.title`)}</CardTitle>
       <FormControl fullWidth>
         <Select
-          MenuProps={{ elevation: 2 }}
+          MenuProps={{ elevation: 2, container: containerRef }}
           value={gasPrice}
           onChange={(event) =>
             setValue('gasPrice', event.target.value as string)

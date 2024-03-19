@@ -168,7 +168,7 @@ export const TransactionPage: React.FC = () => {
       .find((process) => process.txHash)?.txHash ?? route.fromAddress;
 
   return (
-    <Container>
+    <Container style={{ padding: '8px 0' }}>
       {getStepList(route, subvariant)}
       {subvariant === 'nft' ? (
         <ContractComponent mt={2}>

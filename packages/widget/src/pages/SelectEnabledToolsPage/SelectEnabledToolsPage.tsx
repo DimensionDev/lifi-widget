@@ -73,8 +73,8 @@ export const SelectEnabledToolsPage: React.FC<{
     <Container disableGutters>
       <List
         sx={{
-          paddingLeft: 1.5,
-          paddingRight: 1.5,
+          paddingLeft: 0,
+          paddingRight: 0,
         }}
       >
         {tools?.[typeKey].map((tool) => (

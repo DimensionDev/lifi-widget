@@ -6,9 +6,11 @@ export const useChains = () => {
   const { chains } = useWidgetConfig();
   const lifi = useLiFi();
   const { data: availableChains, isLoading: isLoadingAvailableChains } =
-    useQuery(['chains'], async () => lifi.getChains(), {
+    useQuery({
+      queryKey: ['chains'],
       refetchInterval: 300000,
       staleTime: 300000,
+      queryFn: async () => lifi.getChains(),
     });
 
   const filteredChains = useMemo(() => {

@@ -42,6 +42,7 @@ export enum HiddenUI {
   ToAddress = 'toAddress',
   ToToken = 'toToken',
   WalletMenu = 'walletMenu',
+  Header = 'header',
 }
 export type HiddenUIType = `${HiddenUI}`;
 
@@ -166,6 +167,8 @@ export interface WidgetConfig {
   };
   languageResources?: LanguageResources;
   disableLanguageDetector?: boolean;
+
+  containerRef?: HTMLElement;
 }
 
 export type WidgetDrawerProps = {

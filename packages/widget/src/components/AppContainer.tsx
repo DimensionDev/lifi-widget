@@ -11,10 +11,8 @@ export const AppExpandedContainer = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'variant',
 })<{ variant?: WidgetVariant }>(({ variant }) => ({
   display: 'flex',
-  justifyContent: 'center',
   alignItems: 'start',
   flex: 1,
-  height: variant === 'drawer' ? 'none' : maxHeight,
 }));
 
 const RelativeContainer = styled(Box, {
@@ -23,13 +21,12 @@ const RelativeContainer = styled(Box, {
   position: 'relative',
   boxSizing: 'content-box',
   width: '100%',
-  minWidth: 360,
-  maxWidth: 392,
-  maxHeight: variant === 'drawer' ? 'none' : maxHeight,
+  minWidth: 284,
   background: theme.palette.background.default,
   overflow: 'auto',
   flex: 1,
   zIndex: 0,
+  backgroundColor: 'transparent',
 }));
 
 const CssBaselineContainer = styled(ScopedCssBaseline, {
@@ -41,9 +38,9 @@ const CssBaselineContainer = styled(ScopedCssBaseline, {
   overflowX: 'clip',
   margin: 0,
   width: '100%',
-  maxHeight: variant === 'drawer' ? 'none' : maxHeight,
   overflowY: 'auto',
   height: '100%',
+  background: 'transparent',
 }));
 
 export const FlexContainer = styled(Container)({

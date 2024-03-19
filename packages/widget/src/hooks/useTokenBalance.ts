@@ -20,9 +20,9 @@ export const useTokenBalance = (token?: Token, accountAddress?: string) => {
     [token?.address, token?.chainId, walletAddress],
   );
 
-  const { data, isLoading, refetch } = useQuery(
-    tokenBalanceQueryKey,
-    async ({ queryKey: [, accountAddress] }) => {
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: tokenBalanceQueryKey,
+    queryFn: async ({ queryKey: [, accountAddress] }) => {
       const cachedToken = queryClient
         .getQueryData<Token[]>([
           'token-balances',
@@ -57,7 +57,7 @@ export const useTokenBalance = (token?: Token, accountAddress?: string) => {
       }
 
       queryClient.setQueriesData<TokenAmount[]>(
-        ['token-balances', accountAddress, token!.chainId],
+        { queryKey: ['token-balances', accountAddress, token!.chainId] },
         (data) => {
           if (data) {
             const clonedData = [...data];
@@ -78,18 +78,16 @@ export const useTokenBalance = (token?: Token, accountAddress?: string) => {
         amount: tokenAmount,
       } as TokenAmount;
     },
-    {
-      enabled: Boolean(walletAddress && token),
-      refetchInterval: defaultRefetchInterval,
-      staleTime: defaultRefetchInterval,
-    },
-  );
+    enabled: Boolean(walletAddress && token),
+    refetchInterval: defaultRefetchInterval,
+    staleTime: defaultRefetchInterval,
+  });
 
   const refetchAllBalances = () => {
-    queryClient.refetchQueries(
-      ['token-balances', accountAddress, token?.chainId],
-      { exact: false },
-    );
+    queryClient.refetchQueries({
+      queryKey: ['token-balances', accountAddress, token?.chainId],
+      exact: false,
+    });
   };
 
   const refetchNewBalance = useCallback(() => {
@@ -106,5 +104,15 @@ export const useTokenBalance = (token?: Token, accountAddress?: string) => {
     refetchNewBalance,
     refetchAllBalances,
     getTokenBalancesWithRetry,
+  } as {
+    token?: TokenAmount;
+    isLoading: boolean;
+    refetch: () => void;
+    refetchNewBalance: () => void;
+    refetchAllBalances: () => void;
+    getTokenBalancesWithRetry: (
+      accountAddress: string,
+      tokens: Token[],
+    ) => Promise<TokenAmount | undefined>;
   };
 };

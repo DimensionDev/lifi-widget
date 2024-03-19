@@ -81,7 +81,13 @@ export const RoutesExpandedElement = () => {
         <Container sx={containerStyle} enableColorScheme>
           <ScrollableContainer>
             <Header>
-              <Typography fontSize={18} fontWeight="700" flex={1} noWrap>
+              <Typography
+                fontSize={14}
+                lineHeight="18px"
+                fontWeight="700"
+                flex={1}
+                noWrap
+              >
                 {subvariant === 'nft'
                   ? t('main.fromAmount')
                   : t('header.youGet')}
@@ -91,16 +97,10 @@ export const RoutesExpandedElement = () => {
                 timeToUpdate={refetchTime}
                 isLoading={isFetching}
                 onClick={() => refetch()}
-                sx={{ marginRight: -1 }}
+                sx={{ p: 0 }}
               />
             </Header>
-            <Stack
-              direction="column"
-              spacing={2}
-              flex={1}
-              paddingX={3}
-              paddingBottom={3}
-            >
+            <Stack direction="column" spacing={1.5} flex={1} paddingBottom={3}>
               {routeNotFound ? (
                 <RouteNotFoundCard />
               ) : isLoading || (isFetching && !routes?.length) ? (

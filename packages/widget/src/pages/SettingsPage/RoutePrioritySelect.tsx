@@ -6,9 +6,11 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardTitle } from '../../components/Card';
 import { Select } from '../../components/Select';
 import { useSettings, useSettingsStore } from '../../stores';
+import { useWidgetConfig } from '@lifi/widget/providers';
 
 export const RoutePrioritySelect: React.FC = () => {
   const { t } = useTranslation();
+  const { containerRef } = useWidgetConfig();
   const setValue = useSettingsStore((state) => state.setValue);
   const { routePriority } = useSettings(['routePriority']);
   const value = routePriority ?? '';
@@ -18,7 +20,7 @@ export const RoutePrioritySelect: React.FC = () => {
       <CardTitle>{t(`settings.routePriority`)}</CardTitle>
       <FormControl fullWidth>
         <Select
-          MenuProps={{ elevation: 2 }}
+          MenuProps={{ elevation: 2, container: containerRef }}
           value={value}
           onChange={(event) =>
             setValue('routePriority', event.target.value as Order)

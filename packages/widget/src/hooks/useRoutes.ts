@@ -9,6 +9,7 @@ import { useDebouncedWatch, useGasRefuel, useToken } from '.';
 import { FormKey, useLiFi, useWallet, useWidgetConfig } from '../providers';
 import { useSettings } from '../stores';
 import { useSwapOnly } from './useSwapOnly';
+import { useEffect } from 'react';
 
 const refetchTime = 60_000;
 
@@ -16,7 +17,15 @@ interface RoutesProps {
   insurableRoute?: Route;
 }
 
-export const useRoutes = ({ insurableRoute }: RoutesProps = {}) => {
+export const useRoutes = ({ insurableRoute }: RoutesProps = {}): {
+  routes?: Route[];
+  isLoading: boolean;
+  isFetching: boolean;
+  isFetched: boolean;
+  dataUpdatedAt: number;
+  refetchTime: number;
+  refetch: () => void;
+} => {
   const lifi = useLiFi();
   const { subvariant, sdkConfig, insurance, contractTool } = useWidgetConfig();
   const { account } = useWallet();
@@ -107,196 +116,202 @@ export const useRoutes = ({ insurableRoute }: RoutesProps = {}) => {
     insurableRoute?.id,
   ];
 
-  const { data, isLoading, isFetching, isFetched, dataUpdatedAt, refetch } =
-    useQuery(
-      queryKey,
-      async ({
-        queryKey: [
-          _,
-          fromAddress,
-          fromChainId,
-          fromTokenAddress,
-          fromTokenAmount,
-          toAddress,
-          toChainId,
-          toTokenAddress,
-          toTokenAmount,
-          toContractAddress,
-          toContractCallData,
-          toContractGasLimit,
-          slippage,
-          enabledBridges,
-          enabledExchanges,
-          routePriority,
-          subvariant,
-          allowSwitchChain,
-          enabledRefuel,
-          gasRecommendationFromAmount,
-          insurance,
-          insurableRouteId,
-        ],
-        signal,
-      }) => {
-        let toWalletAddress;
-        try {
-          toWalletAddress =
-            (await account.signer?.provider?.resolveName(toAddress)) ??
-            (isAddress(toAddress) ? toAddress : fromAddress);
-        } catch {
-          toWalletAddress = isAddress(toAddress) ? toAddress : fromAddress;
-        }
-        const fromAmount = Big(fromTokenAmount || 0)
-          .mul(10 ** (fromToken?.decimals ?? 0))
-          .toFixed(0);
-        const formattedSlippage = parseFloat(slippage) / 100;
+  const {
+    data,
+    isLoading,
+    isFetching,
+    isFetched,
+    dataUpdatedAt,
+    refetch,
+    isSuccess,
+  } = useQuery({
+    queryKey: queryKey,
+    queryFn: async ({
+      queryKey: [
+        _,
+        fromAddress,
+        fromChainId,
+        fromTokenAddress,
+        fromTokenAmount,
+        toAddress,
+        toChainId,
+        toTokenAddress,
+        toTokenAmount,
+        toContractAddress,
+        toContractCallData,
+        toContractGasLimit,
+        slippage,
+        enabledBridges,
+        enabledExchanges,
+        routePriority,
+        subvariant,
+        allowSwitchChain,
+        enabledRefuel,
+        gasRecommendationFromAmount,
+        insurance,
+        insurableRouteId,
+      ],
+      signal,
+    }) => {
+      let toWalletAddress;
+      try {
+        toWalletAddress =
+          (await account.signer?.provider?.resolveName(toAddress)) ??
+          (isAddress(toAddress) ? toAddress : fromAddress);
+      } catch {
+        toWalletAddress = isAddress(toAddress) ? toAddress : fromAddress;
+      }
+      const fromAmount = Big(fromTokenAmount || 0)
+        .mul(10 ** (fromToken?.decimals ?? 0))
+        .toFixed(0);
+      const formattedSlippage = parseFloat(slippage) / 100;
 
-        const allowedBridges: string[] = insurableRoute
-          ? insurableRoute.steps.flatMap((step) =>
-              step.includedSteps
-                .filter((includedStep) => includedStep.type === 'cross')
-                .map((includedStep) => includedStep.toolDetails.key),
-            )
-          : enabledBridges;
+      const allowedBridges: string[] = insurableRoute
+        ? insurableRoute.steps.flatMap((step) =>
+            step.includedSteps
+              .filter((includedStep) => includedStep.type === 'cross')
+              .map((includedStep) => includedStep.toolDetails.key),
+          )
+        : enabledBridges;
 
-        const allowedExchanges: string[] = insurableRoute
-          ? insurableRoute.steps.flatMap((step) =>
-              step.includedSteps
-                .filter((includedStep) => includedStep.type === 'swap')
-                .map((includedStep) => includedStep.toolDetails.key),
-            )
-          : enabledExchanges;
+      const allowedExchanges: string[] = insurableRoute
+        ? insurableRoute.steps.flatMap((step) =>
+            step.includedSteps
+              .filter((includedStep) => includedStep.type === 'swap')
+              .map((includedStep) => includedStep.toolDetails.key),
+          )
+        : enabledExchanges;
 
-        if (subvariant === 'nft') {
-          const contractCallQuote = await lifi.getContractCallQuote(
-            {
-              fromAddress,
-              fromChain: fromChainId,
-              fromToken: fromTokenAddress,
-              toAmount: toTokenAmount,
-              toChain: toChainId,
-              toToken: toTokenAddress,
-              toContractAddress,
-              toContractCallData,
-              toContractGasLimit,
-              allowBridges: allowedBridges,
-              toFallbackAddress: toWalletAddress,
-              slippage: formattedSlippage,
-            },
-            { signal },
-          );
-
-          contractCallQuote.action.toToken = toToken!;
-
-          const customStep =
-            subvariant === 'nft'
-              ? contractCallQuote.includedSteps?.find(
-                  (step) => step.type === 'custom',
-                )
-              : undefined;
-
-          if (customStep && contractTool) {
-            const toolDetails = {
-              key: contractTool.name,
-              name: contractTool.name,
-              logoURI: contractTool.logoURI,
-            };
-            customStep.toolDetails = toolDetails;
-            contractCallQuote.toolDetails = toolDetails;
-          }
-
-          const route: Route = {
-            id: uuidv4(),
-            fromChainId: contractCallQuote.action.fromChainId,
-            fromAmountUSD: contractCallQuote.estimate.fromAmountUSD || '',
-            fromAmount: contractCallQuote.action.fromAmount,
-            fromToken: contractCallQuote.action.fromToken,
-            fromAddress: contractCallQuote.action.fromAddress,
-            toChainId: contractCallQuote.action.toChainId,
-            toAmountUSD: contractCallQuote.estimate.toAmountUSD || '',
-            toAmount: toTokenAmount,
-            toAmountMin: toTokenAmount,
-            toToken: toToken!,
-            toAddress: toWalletAddress,
-            gasCostUSD: contractCallQuote.estimate.gasCosts?.[0].amountUSD,
-            steps: [contractCallQuote],
-            insurance: { state: 'NOT_INSURABLE', feeAmountUsd: '0' },
-          };
-
-          return { routes: [route] } as RoutesResponse;
-        }
-
-        return lifi.getRoutes(
+      if (subvariant === 'nft') {
+        const contractCallQuote = await lifi.getContractCallQuote(
           {
-            fromChainId,
-            fromAmount,
-            fromTokenAddress,
-            toChainId,
-            toTokenAddress,
             fromAddress,
-            toAddress: toWalletAddress,
-            fromAmountForGas:
-              enabledRefuel && gasRecommendationFromAmount
-                ? gasRecommendationFromAmount
-                : undefined,
-            options: {
-              slippage: formattedSlippage,
-              bridges: {
-                allow: allowedBridges,
-              },
-              exchanges: {
-                allow: allowedExchanges,
-              },
-              order: routePriority,
-              allowSwitchChain:
-                subvariant === 'refuel' ? false : allowSwitchChain,
-              insurance: insurance ? Boolean(insurableRoute) : undefined,
-            },
+            fromChain: fromChainId,
+            fromToken: fromTokenAddress,
+            toAmount: toTokenAmount,
+            toChain: toChainId,
+            toToken: toTokenAddress,
+            toContractAddress,
+            toContractCallData,
+            toContractGasLimit,
+            allowBridges: allowedBridges,
+            toFallbackAddress: toWalletAddress,
+            slippage: formattedSlippage,
           },
           { signal },
         );
-      },
-      {
-        enabled: isEnabled,
-        staleTime: refetchTime,
-        cacheTime: refetchTime,
-        refetchInterval(data, query) {
-          return Math.min(
-            Math.abs(refetchTime - (Date.now() - query.state.dataUpdatedAt)),
-            refetchTime,
-          );
+
+        contractCallQuote.action.toToken = toToken!;
+
+        const customStep =
+          subvariant === 'nft'
+            ? contractCallQuote.includedSteps?.find(
+                (step) => step.type === 'custom',
+              )
+            : undefined;
+
+        if (customStep && contractTool) {
+          const toolDetails = {
+            key: contractTool.name,
+            name: contractTool.name,
+            logoURI: contractTool.logoURI,
+          };
+          customStep.toolDetails = toolDetails;
+          contractCallQuote.toolDetails = toolDetails;
+        }
+
+        const route: Route = {
+          id: uuidv4(),
+          fromChainId: contractCallQuote.action.fromChainId,
+          fromAmountUSD: contractCallQuote.estimate.fromAmountUSD || '',
+          fromAmount: contractCallQuote.action.fromAmount,
+          fromToken: contractCallQuote.action.fromToken,
+          fromAddress: contractCallQuote.action.fromAddress,
+          toChainId: contractCallQuote.action.toChainId,
+          toAmountUSD: contractCallQuote.estimate.toAmountUSD || '',
+          toAmount: toTokenAmount,
+          toAmountMin: toTokenAmount,
+          toToken: toToken!,
+          toAddress: toWalletAddress,
+          gasCostUSD: contractCallQuote.estimate.gasCosts?.[0].amountUSD,
+          steps: [contractCallQuote],
+          insurance: { state: 'NOT_INSURABLE', feeAmountUsd: '0' },
+        };
+
+        return { routes: [route] } as RoutesResponse;
+      }
+
+      return lifi.getRoutes(
+        {
+          fromChainId,
+          fromAmount,
+          fromTokenAddress,
+          toChainId,
+          toTokenAddress,
+          fromAddress,
+          toAddress: toWalletAddress,
+          fromAmountForGas:
+            enabledRefuel && gasRecommendationFromAmount
+              ? gasRecommendationFromAmount
+              : undefined,
+          options: {
+            slippage: formattedSlippage,
+            bridges: {
+              allow: allowedBridges,
+            },
+            exchanges: {
+              allow: allowedExchanges,
+            },
+            order: routePriority,
+            allowSwitchChain:
+              subvariant === 'refuel' ? false : allowSwitchChain,
+            insurance: insurance ? Boolean(insurableRoute) : undefined,
+          },
         },
-        retry(failureCount, error: any) {
-          if (error?.code === LifiErrorCode.NotFound) {
-            return false;
-          }
-          return true;
-        },
-        onSuccess(data) {
-          if (data.routes[0]) {
-            // Update local tokens cache to keep priceUSD in sync
-            const { fromToken, toToken } = data.routes[0];
-            [fromToken, toToken].forEach((token) => {
-              queryClient.setQueriesData<Token[]>(
-                ['token-balances', account.address, token.chainId],
-                (data) => {
-                  if (data) {
-                    const clonedData = [...data];
-                    const index = clonedData.findIndex(
-                      (dataToken) => dataToken.address === token.address,
-                    );
-                    clonedData[index] = {
-                      ...clonedData[index],
-                      ...token,
-                    };
-                    return clonedData;
-                  }
-                },
+        { signal },
+      );
+    },
+    enabled: isEnabled,
+    staleTime: refetchTime,
+    gcTime: refetchTime,
+    refetchInterval(query) {
+      return Math.min(
+        Math.abs(refetchTime - (Date.now() - query.state.dataUpdatedAt)),
+        refetchTime,
+      );
+    },
+    retry(failureCount, error: any) {
+      if (error?.code === LifiErrorCode.NotFound) {
+        return false;
+      }
+      return true;
+    },
+  });
+
+  useEffect(() => {
+    if (isSuccess && data?.routes[0]) {
+      // Update local tokens cache to keep priceUSD in sync
+      const { fromToken, toToken } = data.routes[0];
+      [fromToken, toToken].forEach((token) => {
+        queryClient.setQueriesData<Token[]>(
+          { queryKey: ['token-balances', account.address, token.chainId] },
+          (data) => {
+            if (data) {
+              const clonedData = [...data];
+              const index = clonedData.findIndex(
+                (dataToken) => dataToken.address === token.address,
               );
-            });
-          }
-        },
-      },
-    );
+              clonedData[index] = {
+                ...clonedData[index],
+                ...token,
+              };
+              return clonedData;
+            }
+          },
+        );
+      });
+    }
+  }, [isSuccess, data, account.address, queryClient]);
 
   return {
     routes: data?.routes,

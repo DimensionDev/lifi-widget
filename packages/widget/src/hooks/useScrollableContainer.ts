@@ -1,6 +1,7 @@
 import { useCallback, useLayoutEffect, useState } from 'react';
 import { createElementId, ElementId } from '../utils';
 import { useDefaultElementId } from './useDefaultElementId';
+import { useWidgetConfig } from '../providers';
 
 export const getScrollableContainer = (elementId: string) =>
   document.getElementById(
@@ -9,12 +10,14 @@ export const getScrollableContainer = (elementId: string) =>
 
 export const useGetScrollableContainer = () => {
   const elementId = useDefaultElementId();
+  const { containerRef } = useWidgetConfig();
+
   const getContainer = useCallback(
     () => getScrollableContainer(elementId),
     [elementId],
   );
 
-  return getContainer;
+  return containerRef ?? getContainer;
 };
 
 export const useScrollableContainer = (elementId: string) => {

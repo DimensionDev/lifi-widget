@@ -21,19 +21,19 @@ export const MainPage: React.FC = () => {
   const nft = subvariant === 'nft';
   return (
     <FormContainer disableGutters>
-      <ActiveTransactions mx={3} mt={1} mb={1} />
+      <ActiveTransactions mt={1} mb={1} />
       {nft ? (
-        <ContractComponent mx={3} mt={1} mb={1}>
+        <ContractComponent mt={1} mb={1}>
           {contractComponent}
         </ContractComponent>
       ) : null}
-      <SelectChainAndToken mt={1} mx={3} mb={2} />
-      {!nft ? <AmountInput formType="from" mx={3} mb={2} /> : null}
-      {!expandable ? <Routes mx={3} mb={2} /> : null}
-      <SendToWallet mx={3} mb={2} />
-      <GasRefuelMessage mx={3} mb={2} />
-      <MainGasMessage mx={3} mb={2} />
-      <Box display="flex" mx={3} mb={1}>
+      <SelectChainAndToken mb={2} />
+      {!nft ? <AmountInput formType="from" mb={2} /> : null}
+      {!expandable ? <Routes mb={2} /> : null}
+      <SendToWallet mb={2} />
+      <GasRefuelMessage mb={2} />
+      <MainGasMessage mb={2} />
+      <Box display="flex">
         <ReviewButton />
         <SendToWalletButton />
       </Box>

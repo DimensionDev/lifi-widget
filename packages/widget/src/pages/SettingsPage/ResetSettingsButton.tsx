@@ -78,7 +78,7 @@ export const ResetSettingsButton: React.FC = () => {
   }
 
   return (
-    <Box px={3} mt={1.5} mb={1}>
+    <Box mt={1.5} mb={1}>
       <ResetButtonContainer>
         <Box display="flex" marginBottom="12px">
           <InfoRounded

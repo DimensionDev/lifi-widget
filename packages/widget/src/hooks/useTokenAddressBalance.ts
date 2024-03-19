@@ -20,6 +20,6 @@ export const useTokenAddressBalance = (
   return {
     token,
     isLoading: isBalanceLoading,
-    refetch,
+    refetch: () => refetch(),
   };
 };

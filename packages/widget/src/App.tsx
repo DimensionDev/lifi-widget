@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo } from 'react';
 import type { WidgetDrawer } from './AppDrawer';
 import { AppDrawer } from './AppDrawer';
 import { AppProvider } from './AppProvider';
@@ -12,10 +12,11 @@ import { Header } from './components/Header';
 import { Initializer } from './components/Initializer';
 import { PoweredBy } from './components/PoweredBy';
 import { RoutesExpanded } from './components/Routes';
-import { useExpandableVariant } from './hooks';
+import { useExpandableVariant, useNavigateBack } from './hooks';
 import { useWidgetConfig } from './providers';
-import type { WidgetConfig, WidgetProps } from './types';
-import { ElementId, createElementId } from './utils';
+import { HiddenUI, type WidgetConfig, type WidgetProps } from './types';
+import { ElementId, createElementId, navigationRoutes } from './utils';
+import { useMatch } from 'react-router-dom';
 
 export const App = forwardRef<WidgetDrawer, WidgetProps>(
   ({ elementRef, open, onClose, integrator, ...other }, ref) => {
@@ -25,7 +26,7 @@ export const App = forwardRef<WidgetDrawer, WidgetProps>(
     );
     return config?.variant !== 'drawer' ? (
       <AppProvider config={config}>
-        <AppDefault />
+        <AppDefault ref={ref} />
       </AppProvider>
     ) : (
       <AppDrawer
@@ -40,23 +41,56 @@ export const App = forwardRef<WidgetDrawer, WidgetProps>(
   },
 );
 
-export const AppDefault = () => {
-  const { elementId } = useWidgetConfig();
+export interface AppDefaultRef {
+  navigateBack: () => void;
+  navigateToTransaction: () => void;
+  navigateToSettings: () => void;
+  isHome: boolean;
+}
+
+export const AppDefault = forwardRef((_, ref) => {
+  const { elementId, hiddenUI } = useWidgetConfig();
   const expandable = useExpandableVariant();
+  const { navigateBack, navigate } = useNavigateBack();
+
+  const isHome = useMatch('/');
+
+  const handleNavigateToTransaction = useCallback(() => {
+    navigate(navigationRoutes.transactionHistory);
+  }, [navigate]);
+
+  const handleNavigateToSettings = useCallback(() => {
+    navigate(navigationRoutes.settings);
+  }, [navigate]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      navigateBack,
+      isHome: isHome?.pathname === '/',
+      navigateToTransaction: handleNavigateToTransaction,
+      navigateToSettings: handleNavigateToSettings,
+    }),
+    [
+      navigateBack,
+      isHome,
+      handleNavigateToSettings,
+      handleNavigateToTransaction,
+    ],
+  );
 
   return (
     <AppExpandedContainer
       id={createElementId(ElementId.AppExpandedContainer, elementId)}
     >
       <AppContainer>
-        <Header />
+        {!hiddenUI?.includes(HiddenUI.Header) ? <Header /> : null}
         <FlexContainer disableGutters>
           <AppRoutes />
         </FlexContainer>
-        <PoweredBy />
         <Initializer />
       </AppContainer>
       {expandable ? <RoutesExpanded /> : null}
     </AppExpandedContainer>
   );
-};
+});

@@ -7,11 +7,13 @@ import { useTranslation } from 'react-i18next';
 import { IconTypography } from './RouteCard.style';
 import type { RouteCardEssentialsProps } from './types';
 import { getFeeCostsBreakdown, getGasCostsBreakdown } from './utils';
+import { useWidgetConfig } from '@lifi/widget/providers';
 
 export const RouteCardEssentials: React.FC<RouteCardEssentialsProps> = ({
   route,
   dense,
 }) => {
+  const { containerRef } = useWidgetConfig();
   const { t } = useTranslation();
   const executionTimeMinutes = Math.ceil(
     route.steps
@@ -24,6 +26,7 @@ export const RouteCardEssentials: React.FC<RouteCardEssentialsProps> = ({
   return (
     <Box display="flex" justifyContent={'space-between'} flex={1} mt={2}>
       <Tooltip
+        PopperProps={{ container: containerRef }}
         title={
           <Box component="span">
             {t(`tooltip.estimatedNetworkFee`)}
@@ -58,6 +61,7 @@ export const RouteCardEssentials: React.FC<RouteCardEssentialsProps> = ({
         </Box>
       </Tooltip>
       <Tooltip
+        PopperProps={{ container: containerRef }}
         title={
           <Box component="span">
             {t(`tooltip.additionalProviderFee`)}
@@ -97,6 +101,7 @@ export const RouteCardEssentials: React.FC<RouteCardEssentialsProps> = ({
         </Box>
       </Tooltip>
       <Tooltip
+        PopperProps={{ container: containerRef }}
         title={t(`tooltip.estimatedTime`)}
         placement="top"
         enterDelay={400}
@@ -119,6 +124,7 @@ export const RouteCardEssentials: React.FC<RouteCardEssentialsProps> = ({
         </Box>
       </Tooltip>
       <Tooltip
+        PopperProps={{ container: containerRef }}
         title={t(`tooltip.numberOfSteps`)}
         placement="top"
         enterDelay={400}
