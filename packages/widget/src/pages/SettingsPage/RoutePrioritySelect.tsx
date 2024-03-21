@@ -28,7 +28,7 @@ export const RoutePrioritySelect: React.FC = () => {
           IconComponent={KeyboardArrowDownIcon}
           dense
         >
-          {Orders.map((order) => {
+          {['RECOMMENDED', 'FASTEST'].map((order) => {
             const tag = t(`main.tags.${order.toLowerCase()}` as any);
             const tagName = `${tag[0]}${tag.slice(1).toLowerCase()}`;
             return (

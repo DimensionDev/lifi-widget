@@ -10,7 +10,6 @@ import {
 } from './components/AppContainer';
 import { Header } from './components/Header';
 import { Initializer } from './components/Initializer';
-import { PoweredBy } from './components/PoweredBy';
 import { RoutesExpanded } from './components/Routes';
 import { useExpandableVariant, useNavigateBack } from './hooks';
 import { useWidgetConfig } from './providers';
@@ -46,6 +45,8 @@ export interface AppDefaultRef {
   navigateToTransaction: () => void;
   navigateToSettings: () => void;
   isHome: boolean;
+  isHistory: boolean;
+  isSettings: boolean;
 }
 
 export const AppDefault = forwardRef((_, ref) => {
@@ -54,6 +55,8 @@ export const AppDefault = forwardRef((_, ref) => {
   const { navigateBack, navigate } = useNavigateBack();
 
   const isHome = useMatch('/');
+  const isHistory = useMatch('/transaction-history');
+  const isSettings = useMatch('/settings');
 
   const handleNavigateToTransaction = useCallback(() => {
     navigate(navigationRoutes.transactionHistory);
@@ -68,12 +71,16 @@ export const AppDefault = forwardRef((_, ref) => {
     () => ({
       navigateBack,
       isHome: isHome?.pathname === '/',
+      isHistory: isHistory?.pathname.includes('/transaction-history'),
+      isSettings: isSettings?.pathname.includes('/settings'),
       navigateToTransaction: handleNavigateToTransaction,
       navigateToSettings: handleNavigateToSettings,
     }),
     [
       navigateBack,
       isHome,
+      isHistory,
+      isSettings,
       handleNavigateToSettings,
       handleNavigateToTransaction,
     ],

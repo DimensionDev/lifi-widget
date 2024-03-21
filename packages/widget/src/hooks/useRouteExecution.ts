@@ -3,7 +3,7 @@ import type { ExchangeRateUpdateParams, Route } from '@lifi/sdk';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef } from 'react';
 import { shallow } from 'zustand/shallow';
-import { useLiFi, useWallet } from '../providers';
+import { useLiFi, useWallet, useWidgetConfig } from '../providers';
 import {
   getUpdatedProcess,
   isRouteActive,
@@ -42,6 +42,7 @@ export const useRouteExecution = ({
     (state) => [state.updateRoute, state.restartRoute, state.deleteRoute],
     shallow,
   );
+  const { walletManagement } = useWidgetConfig();
 
   const updateRouteHook = (updatedRoute: Route) => {
     const routeExecution =
@@ -79,6 +80,9 @@ export const useRouteExecution = ({
     const currentChainId = await account.signer.getChainId();
 
     if (currentChainId !== requiredChainId) {
+      if (walletManagement?.beforeSwitchChain) {
+        await walletManagement.beforeSwitchChain(requiredChainId);
+      }
       const signer = await switchChain(requiredChainId);
       if (!signer) {
         throw new Error('Chain was not switched.');

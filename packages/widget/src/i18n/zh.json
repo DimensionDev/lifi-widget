@@ -83,7 +83,7 @@
   "success": {
     "message": {
       "exchangePartiallySuccessful": "我们尝试完成本次交易，但是 {{tool}} 的 {{tokenSymbol}} 代币流动性不足。",
-      "exchangeSuccessful": "{{walletAddress}} 钱包在 {{chainName}} 链上收到 {{amount, number(maximumFractionDigits: 9)}} {{tokenSymbol}}",
+      "exchangeSuccessful": "{{walletAddress}} 钱包在 {{chainName}} 链上现在拥有 {{amount, number(maximumFractionDigits: 9)}} {{tokenSymbol}}",
       "purchaseSuccessful": "您的 {{walletAddress}} 钱包在 {{chainName}} 链上拥有该 {{assetName}} 财产"
     },
     "title": {

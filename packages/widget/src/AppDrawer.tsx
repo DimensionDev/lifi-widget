@@ -25,6 +25,8 @@ export interface WidgetDrawer {
   closeDrawer(): void;
   navigateBack?: () => void;
   isHome?: boolean;
+  isHistory?: boolean;
+  isSettings?: boolean;
   navigateToTransaction?: () => void;
   navigateToSettings?: () => void;
 }

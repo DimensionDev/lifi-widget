@@ -1,3 +1,4 @@
+import { useWidgetConfig } from '@lifi/widget/providers';
 import type { IconButtonProps } from '@mui/material';
 import { Box, CircularProgress, IconButton, Tooltip } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -21,6 +22,7 @@ export const ProgressToNextUpdate: React.FC<
   const [value, setValue] = useState(() =>
     getProgressValue(updatedAt, timeToUpdate),
   );
+  const { containerRef } = useWidgetConfig();
 
   useEffect(() => {
     setValue(getProgressValue(updatedAt, timeToUpdate));
@@ -43,6 +45,7 @@ export const ProgressToNextUpdate: React.FC<
   return (
     <IconButton onClick={onClick} disabled={isLoading} {...other}>
       <Tooltip
+        PopperProps={{ container: containerRef }}
         title={
           <Trans
             i18nKey="tooltip.progressToNextUpdate"
