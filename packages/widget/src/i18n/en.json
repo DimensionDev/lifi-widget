@@ -4,7 +4,7 @@
     "title": "Language"
   },
   "format": {
-    "currency": "{{value, currency(currency: USD)}}",
+    "currency": "${{value}}",
     "number": "{{value, number(maximumFractionDigits: 9)}}"
   },
   "button": {

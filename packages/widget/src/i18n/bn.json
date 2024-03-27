@@ -34,7 +34,7 @@
     "viewOnExplorer": "এক্সপ্লোরারে দেখুন"
   },
   "format": {
-    "currency": "{{value, currency(currency: USD)}}",
+    "currency": "${{value}}",
     "number": "{{value, number(maximumFractionDigits: 9)}}"
   },
   "header": {

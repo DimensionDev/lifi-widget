@@ -32,7 +32,7 @@
     "viewOnExplorer": "Ver en explorador"
   },
   "format": {
-    "currency": "{{value, currency(currency: USD)}}",
+    "currency": "${{value}}",
     "number": "{{value, number(maximumFractionDigits: 4)}}"
   },
   "header": {

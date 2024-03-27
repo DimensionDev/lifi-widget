@@ -121,7 +121,7 @@ export const NavigationHeader: React.FC = () => {
           <Route
             path={navigationRoutes.home}
             element={
-              <Box>
+              <Box sx={{ pr: 1 }}>
                 {account.isActive && !hiddenUI?.includes(HiddenUI.History) ? (
                   <Tooltip
                     title={t(`header.transactionHistory`)}

@@ -9,17 +9,13 @@ export const HeaderAppBar = styled(AppBar)(({ theme }) => ({
   alignItems: 'center',
   position: 'relative',
   minHeight: 40,
-  padding: theme.spacing(0, 3, 0, 3),
-  ':first-of-type': {
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(0.5),
-  },
+  padding: theme.spacing(0, 2, 0, 2),
 }));
 
 export const Container = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'sticky',
 })<{ sticky?: boolean }>(({ theme, sticky }) => ({
-  backgroundColor: theme.palette.background.default,
+  backgroundColor: 'transparent',
   backdropFilter: 'blur(12px)',
   position: sticky ? 'sticky' : 'relative',
   top: 0,
