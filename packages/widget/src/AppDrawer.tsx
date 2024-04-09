@@ -29,6 +29,7 @@ export interface WidgetDrawer {
   isSettings?: boolean;
   navigateToTransaction?: () => void;
   navigateToSettings?: () => void;
+  deleteTransactions?: () => void;
 }
 
 export const AppDrawer = forwardRef<WidgetDrawer, WidgetProps>(

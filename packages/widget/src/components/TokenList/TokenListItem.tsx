@@ -62,7 +62,7 @@ export const TokenListItemButton: React.FC<TokenListItemButtonProps> = ({
   isBalanceLoading,
 }) => {
   const { t } = useTranslation();
-  const tokenPrice = formatTokenPrice(token.amount, token.priceUSD);
+  const tokenPrice = formatTokenPrice(token.amount, token.priceUSD, 6);
   const container = useRef(null);
   const timeoutId = useRef<ReturnType<typeof setTimeout>>();
   const [showAddress, setShowAddress] = useState(false);

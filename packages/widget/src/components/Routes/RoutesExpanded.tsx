@@ -30,7 +30,7 @@ const routes: RouteObject[] = [
 export const RoutesExpanded = () => {
   const match = useDOMRoutes(routes);
   return (
-    <CollapseContainer>
+    <CollapseContainer style={{ maxHeight: '100%' }}>
       <Collapse timeout={timeout} in={!!match} orientation="horizontal">
         <Grow timeout={timeout} in={!!match} mountOnEnter unmountOnExit>
           <div>
@@ -46,7 +46,7 @@ export const RoutesExpandedElement = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const setExecutableRoute = useSetExecutableRoute();
-  const { subvariant, containerStyle } = useWidgetConfig();
+  const { subvariant, containerStyle, maxHeight } = useWidgetConfig();
   const { isValid, isValidating } = useFormState();
   const {
     routes,
@@ -79,7 +79,9 @@ export const RoutesExpandedElement = () => {
     <Collapse timeout={timeout.enter} in={expanded} orientation="horizontal">
       <Grow timeout={timeout.enter} in={expanded} mountOnEnter unmountOnExit>
         <Container sx={containerStyle} enableColorScheme>
-          <ScrollableContainer>
+          <ScrollableContainer
+            style={{ maxHeight: maxHeight, overflow: 'auto' }}
+          >
             <Header>
               <Typography
                 fontSize={14}

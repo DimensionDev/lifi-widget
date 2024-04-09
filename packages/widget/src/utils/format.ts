@@ -90,12 +90,26 @@ export const formatInputAmount = (
   return `${integer || (fraction ? '0' : '')}${fraction ? `.${fraction}` : ''}`;
 };
 
-export const formatTokenPrice = (amount?: string, price?: string) => {
+export const formatTokenPrice = (
+  amount?: string,
+  price?: string,
+  decimals?: number,
+) => {
   if (!amount || !price) {
     return 0;
   }
   if (isNaN(Number(amount)) || isNaN(Number(price))) {
     return 0;
   }
-  return parseFloat(amount) * parseFloat(price);
+
+  const result = parseFloat(amount) * parseFloat(price);
+  let [integer, fraction = ''] = `${result}`.split('.');
+
+  if (decimals && fraction.length > decimals) {
+    fraction = fraction.slice(0, decimals);
+  }
+  integer = integer.replace(/^0+|-/, '');
+  fraction = fraction.replace(/(0+)$/, '');
+
+  return `${integer || (fraction ? '0' : '')}${fraction ? `.${fraction}` : ''}`;
 };

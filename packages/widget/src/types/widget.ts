@@ -168,7 +168,7 @@ export interface WidgetConfig {
   };
   languageResources?: LanguageResources;
   disableLanguageDetector?: boolean;
-
+  maxHeight?: number;
   containerRef?: HTMLElement;
 }
 

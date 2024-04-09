@@ -39,7 +39,7 @@ export const RouteCard: React.FC<
     route.tags?.[0] === 'RECOMMENDED' ? RecommendedTooltip : Fragment;
 
   const cardContent = (
-    <Box flex={1}>
+    <Box flex={1} sx={{ minHeight: route.tags?.length ? '144px' : '102px' }}>
       {subvariant !== 'refuel' && (insurable || route.tags?.length) ? (
         <Box display="flex" alignItems="center" mb={2}>
           {insurable ? (

@@ -1,4 +1,10 @@
-import { forwardRef, useCallback, useImperativeHandle, useMemo } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from 'react';
 import type { WidgetDrawer } from './AppDrawer';
 import { AppDrawer } from './AppDrawer';
 import { AppProvider } from './AppProvider';
@@ -16,6 +22,16 @@ import { useWidgetConfig } from './providers';
 import { HiddenUI, type WidgetConfig, type WidgetProps } from './types';
 import { ElementId, createElementId, navigationRoutes } from './utils';
 import { useMatch } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+} from '@mui/material';
+import { useRouteExecutionStore } from './stores';
 
 export const App = forwardRef<WidgetDrawer, WidgetProps>(
   ({ elementRef, open, onClose, integrator, ...other }, ref) => {
@@ -44,15 +60,25 @@ export interface AppDefaultRef {
   navigateBack: () => void;
   navigateToTransaction: () => void;
   navigateToSettings: () => void;
+  deleteTransactions: () => void;
   isHome: boolean;
   isHistory: boolean;
   isSettings: boolean;
 }
 
 export const AppDefault = forwardRef((_, ref) => {
-  const { elementId, hiddenUI } = useWidgetConfig();
+  const { t } = useTranslation();
+  const { elementId, hiddenUI, containerRef } = useWidgetConfig();
   const expandable = useExpandableVariant();
   const { navigateBack, navigate } = useNavigateBack();
+
+  const [open, setOpen] = useState(false);
+
+  const toggleDialog = useCallback(() => {
+    setOpen((open) => !open);
+  }, []);
+
+  const deleteRoutes = useRouteExecutionStore((store) => store.deleteRoutes);
 
   const isHome = useMatch('/');
   const isHistory = useMatch('/transaction-history');
@@ -75,6 +101,7 @@ export const AppDefault = forwardRef((_, ref) => {
       isSettings: isSettings?.pathname.includes('/settings'),
       navigateToTransaction: handleNavigateToTransaction,
       navigateToSettings: handleNavigateToSettings,
+      deleteTransactions: toggleDialog,
     }),
     [
       navigateBack,
@@ -83,6 +110,7 @@ export const AppDefault = forwardRef((_, ref) => {
       isSettings,
       handleNavigateToSettings,
       handleNavigateToTransaction,
+      toggleDialog,
     ],
   );
 
@@ -97,6 +125,24 @@ export const AppDefault = forwardRef((_, ref) => {
         </FlexContainer>
         <Initializer />
       </AppContainer>
+      <Dialog open={open} onClose={toggleDialog} container={containerRef}>
+        <DialogTitle>{t('warning.title.deleteTransactionHistory')}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {t('warning.message.deleteTransactionHistory')}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={toggleDialog}>{t('button.cancel')}</Button>
+          <Button
+            variant="contained"
+            onClick={() => deleteRoutes('completed')}
+            autoFocus
+          >
+            {t('button.delete')}
+          </Button>
+        </DialogActions>
+      </Dialog>
       {expandable ? <RoutesExpanded /> : null}
     </AppExpandedContainer>
   );
