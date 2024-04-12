@@ -8,7 +8,7 @@ import { useWidgetConfig } from '@lifi/widget/providers';
 
 export const GasPriceSelect = () => {
   const { t } = useTranslation();
-  const { containerRef } = useWidgetConfig();
+  const { containerRef, inputColor } = useWidgetConfig();
   const setValue = useSettingsStore((state) => state.setValue);
   const { gasPrice } = useSettings(['gasPrice']);
 
@@ -17,6 +17,7 @@ export const GasPriceSelect = () => {
       <CardTitle>{t(`settings.gasPrice.title`)}</CardTitle>
       <FormControl fullWidth>
         <Select
+          sx={{ background: inputColor }}
           MenuProps={{ elevation: 2, container: containerRef }}
           value={gasPrice}
           onChange={(event) =>

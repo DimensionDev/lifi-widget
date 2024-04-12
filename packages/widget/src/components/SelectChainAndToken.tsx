@@ -7,7 +7,18 @@ import { FormKey, useWidgetConfig } from '../providers';
 import { DisabledUI, HiddenUI } from '../types';
 
 export const SelectChainAndToken: React.FC<BoxProps> = (props) => {
-  const { disabledUI, hiddenUI, subvariant } = useWidgetConfig();
+  const prefersNarrowView = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down('sm'),
+  );
+  const { disabledUI, hiddenUI, subvariant, forceCompact } = useWidgetConfig();
+  const [fromChain, toChain, fromToken, toToken] = useWatch({
+    name: [
+      FormKey.FromChain,
+      FormKey.ToChain,
+      FormKey.FromToken,
+      FormKey.ToToken,
+    ],
+  });
 
   const hiddenReverse =
     subvariant === 'refuel' ||
@@ -18,9 +29,23 @@ export const SelectChainAndToken: React.FC<BoxProps> = (props) => {
   const hiddenToToken =
     subvariant === 'nft' || hiddenUI?.includes(HiddenUI.ToToken);
 
+  const isCompact =
+    fromChain &&
+    toChain &&
+    fromToken &&
+    toToken &&
+    !prefersNarrowView &&
+    !hiddenToToken;
+
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }} {...props}>
-      <SelectTokenButton formType="from" compact={false} />
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: forceCompact ?? isCompact ? 'row' : 'column',
+      }}
+      {...props}
+    >
+      <SelectTokenButton formType="from" compact={forceCompact ?? isCompact} />
       {!hiddenToToken ? (
         <Box
           sx={{
@@ -30,11 +55,13 @@ export const SelectChainAndToken: React.FC<BoxProps> = (props) => {
           }}
           m={!hiddenReverse ? -1.125 : 1}
         >
-          {!hiddenReverse ? <ReverseTokensButton vertical /> : null}
+          {!hiddenReverse ? (
+            <ReverseTokensButton vertical={!isCompact} />
+          ) : null}
         </Box>
       ) : null}
       {!hiddenToToken ? (
-        <SelectTokenButton formType="to" compact={false} />
+        <SelectTokenButton formType="to" compact={forceCompact ?? isCompact} />
       ) : null}
     </Box>
   );

@@ -10,7 +10,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useChain } from '../../hooks';
 import { useWallet, useWidgetConfig } from '../../providers';
 import { HiddenUI } from '../../types';
-import { navigationRoutes, shortenAddress } from '../../utils';
+import {
+  ElementId,
+  createElementId,
+  navigationRoutes,
+  shortenAddress,
+} from '../../utils';
 import { CloseDrawerButton } from './CloseDrawerButton';
 import {
   DrawerWalletContainer,
@@ -20,8 +25,13 @@ import {
 import { WalletMenu } from './WalletMenu';
 
 export const WalletHeader: React.FC = () => {
+  const { elementId } = useWidgetConfig();
   return (
-    <HeaderAppBar elevation={0} sx={{ justifyContent: 'flex-end' }}>
+    <HeaderAppBar
+      elevation={0}
+      sx={{ justifyContent: 'flex-end' }}
+      id={createElementId(ElementId.HeaderAppBar, elementId)}
+    >
       <WalletMenuButton />
     </HeaderAppBar>
   );

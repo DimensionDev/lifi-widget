@@ -39,7 +39,7 @@ export const FormPriceHelperTextBase: React.FC<
     name: FormKeyHelper.getAmountKey(formType),
   });
 
-  const fromAmountTokenPrice = formatTokenPrice(amount, token?.priceUSD);
+  const fromAmountTokenPrice = formatTokenPrice(amount, token?.priceUSD, 6);
 
   return (
     <FormHelperText

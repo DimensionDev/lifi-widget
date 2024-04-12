@@ -8,7 +8,7 @@ import { useRoutes as useDOMRoutes, useNavigate } from 'react-router-dom';
 import { useRoutes } from '../../hooks';
 import { useWidgetConfig } from '../../providers';
 import { useSetExecutableRoute } from '../../stores';
-import { navigationRoutes } from '../../utils';
+import { ElementId, createElementId, navigationRoutes } from '../../utils';
 import { ProgressToNextUpdate } from '../ProgressToNextUpdate';
 import { RouteCard, RouteCardSkeleton, RouteNotFoundCard } from '../RouteCard';
 import {
@@ -46,7 +46,12 @@ export const RoutesExpandedElement = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const setExecutableRoute = useSetExecutableRoute();
-  const { subvariant, containerStyle, maxHeight } = useWidgetConfig();
+  const {
+    subvariant,
+    containerStyle,
+    elementId,
+    subTitleSize = 18,
+  } = useWidgetConfig();
   const { isValid, isValidating } = useFormState();
   const {
     routes,
@@ -78,14 +83,16 @@ export const RoutesExpandedElement = () => {
   return (
     <Collapse timeout={timeout.enter} in={expanded} orientation="horizontal">
       <Grow timeout={timeout.enter} in={expanded} mountOnEnter unmountOnExit>
-        <Container sx={containerStyle} enableColorScheme>
-          <ScrollableContainer
-            style={{ maxHeight: maxHeight, overflow: 'auto' }}
-          >
+        <Container
+          sx={containerStyle}
+          id={createElementId(ElementId.RouteExpandedContainer, elementId)}
+          enableColorScheme
+        >
+          <ScrollableContainer>
             <Header>
               <Typography
-                fontSize={14}
-                lineHeight="18px"
+                fontSize={subTitleSize}
+                lineHeight={`${subTitleSize + 4}px`}
                 fontWeight="700"
                 flex={1}
                 noWrap

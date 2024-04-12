@@ -35,6 +35,7 @@ export const TokenListItem: React.FC<TokenListItemProps> = memo(
     return (
       <ListItem
         disablePadding
+        className="widget-token-list-item"
         style={{
           height: `${size}px`,
           transform: `translateY(${start}px)`,

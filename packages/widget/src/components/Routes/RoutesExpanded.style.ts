@@ -14,6 +14,9 @@ export const ScrollableContainer = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
   padding: '0 8px',
+  '::-webkit-scrollbar': {
+    display: 'none',
+  },
 });
 
 export const Container = styled(ScopedCssBaseline)(({ theme }) => ({

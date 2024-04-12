@@ -168,8 +168,11 @@ export interface WidgetConfig {
   };
   languageResources?: LanguageResources;
   disableLanguageDetector?: boolean;
-  maxHeight?: number;
   containerRef?: HTMLElement;
+  forceCompact?: boolean;
+  progressSize?: number;
+  subTitleSize?: number;
+  inputColor?: string;
 }
 
 export type WidgetDrawerProps = {

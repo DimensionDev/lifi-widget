@@ -10,7 +10,7 @@ import { useWidgetConfig } from '@lifi/widget/providers';
 
 export const RoutePrioritySelect: React.FC = () => {
   const { t } = useTranslation();
-  const { containerRef } = useWidgetConfig();
+  const { containerRef, inputColor } = useWidgetConfig();
   const setValue = useSettingsStore((state) => state.setValue);
   const { routePriority } = useSettings(['routePriority']);
   const value = routePriority ?? '';
@@ -20,6 +20,7 @@ export const RoutePrioritySelect: React.FC = () => {
       <CardTitle>{t(`settings.routePriority`)}</CardTitle>
       <FormControl fullWidth>
         <Select
+          sx={{ background: inputColor }}
           MenuProps={{ elevation: 2, container: containerRef }}
           value={value}
           onChange={(event) =>

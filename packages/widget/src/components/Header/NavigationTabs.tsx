@@ -1,9 +1,10 @@
 import { useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { FormKey } from '../../providers';
+import { FormKey, useWidgetConfig } from '../../providers';
 import { useSplitSubvariantStore } from '../../stores';
 import { HeaderAppBar } from './Header.style';
 import { NavbarTab, NavbarTabs } from './NavigationTabs.style';
+import { ElementId, createElementId } from '@lifi/widget/utils';
 
 export const NavigationTabs = () => {
   const { t } = useTranslation();
@@ -11,6 +12,7 @@ export const NavigationTabs = () => {
     state.state,
     state.setState,
   ]);
+  const { elementId } = useWidgetConfig();
   const { setValue } = useFormContext();
   const handleChange = (_: React.SyntheticEvent, value: number) => {
     setValue(FormKey.FromAmount, '');
@@ -20,7 +22,11 @@ export const NavigationTabs = () => {
   };
 
   return (
-    <HeaderAppBar elevation={0} sx={{ py: 1 }}>
+    <HeaderAppBar
+      elevation={0}
+      sx={{ py: 1 }}
+      id={createElementId(ElementId.HeaderAppBar, elementId)}
+    >
       <NavbarTabs
         value={state === 'swap' ? 0 : 1}
         onChange={handleChange}

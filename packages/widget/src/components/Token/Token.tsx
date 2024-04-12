@@ -61,6 +61,7 @@ export const TokenBase: React.FC<TokenProps & BoxProps> = ({
   const formattedTokenPrice = formatTokenPrice(
     formattedTokenAmount,
     token?.priceUSD,
+    6,
   );
   return (
     <Box flex={1} {...other}>
@@ -124,7 +125,7 @@ export const TokenBase: React.FC<TokenProps & BoxProps> = ({
           )
         ) : null}
         {step ? (
-          <Box display="flex" alignItems="flex-end" height={12} mt={0.5}>
+          <Box display="flex" alignItems="flex-end" mt={0.5}>
             <Box pr={0.75}>
               <SmallAvatar
                 src={step.toolDetails.logoURI}

@@ -12,7 +12,7 @@ import {
 import { type FormTypeProps } from '../../providers';
 import { SearchTokenInput } from './SearchTokenInput';
 
-const minTokenListHeight = 360;
+const minTokenListHeight = 307;
 
 export const SelectTokenPage: FC<FormTypeProps> = ({ formType }) => {
   useScrollableOverflowHidden();

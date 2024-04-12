@@ -12,14 +12,16 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog } from '../../components/Dialog';
-import { useWallet } from '../../providers';
+import { useWallet, useWidgetConfig } from '../../providers';
 import { useHeaderStoreContext, useRouteExecutionStore } from '../../stores';
 import { useTransactionHistory } from '../../stores/routes';
 import { TransactionHistoryEmpty } from './TransactionHistoryEmpty';
 import { TransactionHistoryItem } from './TransactionHistoryItem';
+import { ElementId, createElementId } from '@lifi/widget/utils';
 
 export const TransactionHistoryPage: React.FC = () => {
   const { t } = useTranslation();
+  const { elementId } = useWidgetConfig();
   const { account } = useWallet();
   const transactions = useTransactionHistory(account.address);
   const headerStoreContext = useHeaderStoreContext();
@@ -45,7 +47,7 @@ export const TransactionHistoryPage: React.FC = () => {
   }
 
   return (
-    <Container>
+    <Container id={createElementId(ElementId.HistoryContainer, elementId)}>
       <Stack spacing={2} mt={1}>
         {transactions.length ? (
           transactions.map(({ route }) => (

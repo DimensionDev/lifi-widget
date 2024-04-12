@@ -6,9 +6,11 @@ import { Card, CardTitle } from '../../components/Card';
 import { Input } from '../../components/Input';
 import { useSettings, useSettingsStore } from '../../stores';
 import { formatSlippage } from '../../utils';
+import { useWidgetConfig } from '@lifi/widget/providers';
 
 export const SlippageInput = () => {
   const { t } = useTranslation();
+  const { inputColor } = useWidgetConfig();
   const { slippage } = useSettings(['slippage']);
   const setValue = useSettingsStore((state) => state.setValue);
   const defaultValue = useRef(slippage);
@@ -30,6 +32,7 @@ export const SlippageInput = () => {
       <CardTitle>{t(`settings.slippage`)}</CardTitle>
       <FormControl fullWidth>
         <Input
+          sx={{ background: inputColor }}
           size="small"
           placeholder={t(`settings.slippage`) as string}
           endAdornment={<InputAdornment position="end">%</InputAdornment>}

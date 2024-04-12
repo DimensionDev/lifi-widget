@@ -120,7 +120,10 @@ export const AppDefault = forwardRef((_, ref) => {
     >
       <AppContainer>
         {!hiddenUI?.includes(HiddenUI.Header) ? <Header /> : null}
-        <FlexContainer disableGutters>
+        <FlexContainer
+          disableGutters
+          id={createElementId(ElementId.FlexContainer, elementId)}
+        >
           <AppRoutes />
         </FlexContainer>
         <Initializer />

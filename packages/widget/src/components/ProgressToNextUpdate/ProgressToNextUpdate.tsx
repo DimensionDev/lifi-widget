@@ -22,7 +22,7 @@ export const ProgressToNextUpdate: React.FC<
   const [value, setValue] = useState(() =>
     getProgressValue(updatedAt, timeToUpdate),
   );
-  const { containerRef } = useWidgetConfig();
+  const { containerRef, progressSize = 24 } = useWidgetConfig();
 
   useEffect(() => {
     setValue(getProgressValue(updatedAt, timeToUpdate));
@@ -64,13 +64,13 @@ export const ProgressToNextUpdate: React.FC<
             display: 'grid',
             position: 'relative',
             placeItems: 'center',
-            width: 16,
-            height: 16,
+            width: progressSize,
+            height: progressSize,
           }}
         >
           <CircularProgress
             variant="determinate"
-            size={16}
+            size={progressSize}
             value={100}
             sx={(theme) => ({
               position: 'absolute',
@@ -82,7 +82,7 @@ export const ProgressToNextUpdate: React.FC<
           />
           <CircularProgress
             variant={isLoading ? 'indeterminate' : 'determinate'}
-            size={16}
+            size={progressSize}
             value={value}
             sx={(theme) => ({
               opacity: value === 100 && !isLoading ? 0.5 : 1,

@@ -15,12 +15,15 @@ import { ListItemText } from '../../components/ListItemText';
 import { useTools } from '../../hooks';
 import { useHeaderStoreContext, useSettingsStore } from '../../stores';
 import { ListItemButton } from './SelectEnabledToolsPage.style';
+import { ElementId, createElementId } from '@lifi/widget/utils';
+import { useWidgetConfig } from '@lifi/widget/providers';
 
 export const SelectEnabledToolsPage: React.FC<{
   type: 'Bridges' | 'Exchanges';
 }> = ({ type }) => {
   const typeKey = type.toLowerCase() as 'bridges' | 'exchanges';
   const { tools } = useTools();
+  const { elementId } = useWidgetConfig();
   const [enabledTools, setTools] = useSettingsStore(
     (state) => [state[`enabled${type}`], state.setTools],
     shallow,
@@ -70,11 +73,15 @@ export const SelectEnabledToolsPage: React.FC<{
   }, [enabledTools.length, headerStoreContext, setTools, tools, type, typeKey]);
 
   return (
-    <Container disableGutters>
+    <Container
+      disableGutters
+      id={createElementId(ElementId.settingsListContainer, elementId)}
+    >
       <List
         sx={{
           paddingLeft: 0,
           paddingRight: 0,
+          paddingTop: 0,
         }}
       >
         {tools?.[typeKey].map((tool) => (

@@ -9,7 +9,9 @@ import { useWallet, useWidgetConfig } from '../../providers';
 import { useHeaderStore } from '../../stores';
 import { HiddenUI } from '../../types';
 import {
+  ElementId,
   backButtonRoutes,
+  createElementId,
   navigationRoutes,
   navigationRoutesValues,
 } from '../../utils';
@@ -20,7 +22,7 @@ import { WalletMenuButton } from './WalletHeader';
 
 export const NavigationHeader: React.FC = () => {
   const { t } = useTranslation();
-  const { subvariant, hiddenUI, variant } = useWidgetConfig();
+  const { subvariant, hiddenUI, variant, elementId } = useWidgetConfig();
   const { navigate, navigateBack } = useNavigateBack();
   const { account } = useWallet();
   const { element, title } = useHeaderStore((state) => state);
@@ -94,7 +96,10 @@ export const NavigationHeader: React.FC = () => {
 
   return (
     <>
-      <HeaderAppBar elevation={0}>
+      <HeaderAppBar
+        elevation={0}
+        id={createElementId(ElementId.HeaderAppBar, elementId)}
+      >
         {backButtonRoutes.includes(path) ? (
           <IconButton size="medium" edge="start" onClick={navigateBack}>
             <ArrowBackIcon />

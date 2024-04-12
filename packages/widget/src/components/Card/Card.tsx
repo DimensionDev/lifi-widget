@@ -1,3 +1,4 @@
+import { useWidgetConfig } from '@lifi/widget/providers';
 import type { BoxProps, Theme } from '@mui/material';
 import { Box } from '@mui/material';
 import { badgeClasses } from '@mui/material/Badge';
@@ -43,12 +44,18 @@ export const Card = styled(Box, {
   pointerEvents,
   onClick,
 }) => {
-  const backgroundColor = getBackgroundColor(theme, variant, selectionColor);
-  const backgroundHoverColor = onClick
-    ? theme.palette.mode === 'light'
-      ? darken(backgroundColor, 0.02)
-      : lighten(backgroundColor, 0.02)
-    : backgroundColor;
+  const { inputColor } = useWidgetConfig();
+  const backgroundColor = inputColor
+    ? inputColor
+    : getBackgroundColor(theme, variant, selectionColor);
+  const backgroundHoverColor =
+    inputColor === 'transparent'
+      ? 'transparent'
+      : onClick
+      ? theme.palette.mode === 'light'
+        ? darken(backgroundColor, 0.02)
+        : lighten(backgroundColor, 0.02)
+      : backgroundColor;
   return {
     backgroundColor,
     border: `1px solid`,
