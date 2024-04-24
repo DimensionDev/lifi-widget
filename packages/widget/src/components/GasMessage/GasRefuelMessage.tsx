@@ -30,7 +30,7 @@ export const GasRefuelMessage: React.FC<BoxProps> = (props) => {
       unmountOnExit
       mountOnEnter
     >
-      <InfoMessageCard {...props} sx={{ maxWidth: '366px' }}>
+      <InfoMessageCard {...props}>
         <InfoMessageCardTitle
           display="flex"
           alignItems="center"
