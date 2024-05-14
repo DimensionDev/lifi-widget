@@ -64,6 +64,7 @@ export const RoutesPage: React.FC<BoxProps> = () => {
       ) : (
         routes?.map((route: Route, index: number) => (
           <RouteCard
+            className="routeCard"
             key={route.id}
             route={route}
             onClick={() => handleRouteClick(route)}

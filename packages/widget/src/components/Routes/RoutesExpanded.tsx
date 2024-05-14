@@ -119,6 +119,7 @@ export const RoutesExpandedElement = () => {
               ) : (
                 routes?.map((route: Route, index: number) => (
                   <RouteCard
+                    className="routeCard"
                     key={route.id}
                     route={route}
                     onClick={() => handleRouteClick(route)}

@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import type { StoreApi } from 'zustand';
 import type { UseBoundStoreWithEqualityFn } from 'zustand/traditional';
 import { useChains } from '../../hooks';
-import { FormKey } from '../../providers';
+import { FormKey, useWidgetConfig } from '../../providers';
 import type { PersistStoreProviderProps } from '../types';
 import { createChainOrderStore } from './createChainOrderStore';
 import type { ChainOrderState } from './types';
@@ -21,6 +21,7 @@ export function ChainOrderStoreProvider({
   ...props
 }: PersistStoreProviderProps) {
   const storeRef = useRef<ChainOrderStore>();
+  const { maxChainToOrder } = useWidgetConfig();
   const { chains: filteredChains } = useChains();
   const { setValue, getValues } = useFormContext();
 
@@ -30,9 +31,10 @@ export function ChainOrderStoreProvider({
 
   useEffect(() => {
     if (filteredChains) {
-      const chainOrder = storeRef.current
-        ?.getState()
-        .initializeChains(filteredChains.map((chain) => chain.id));
+      const chainOrder = storeRef.current?.getState().initializeChains(
+        filteredChains.map((chain) => chain.id),
+        maxChainToOrder,
+      );
       if (chainOrder) {
         const [fromChainValue, toChainValue] = getValues([
           FormKey.FromChain,
@@ -46,7 +48,7 @@ export function ChainOrderStoreProvider({
         }
       }
     }
-  }, [filteredChains, getValues, setValue]);
+  }, [filteredChains, getValues, setValue, maxChainToOrder]);
 
   return (
     <ChainOrderStoreContext.Provider value={storeRef.current}>

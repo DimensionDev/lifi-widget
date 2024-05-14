@@ -173,6 +173,7 @@ export interface WidgetConfig {
   progressSize?: number;
   subTitleSize?: number;
   inputColor?: string;
+  maxChainToOrder?: number;
 }
 
 export type WidgetDrawerProps = {

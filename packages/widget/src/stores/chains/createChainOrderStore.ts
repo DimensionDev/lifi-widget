@@ -12,7 +12,10 @@ export const createChainOrderStore = ({ namePrefix }: PersistStoreProps) =>
       (set, get) => ({
         chainOrder: [],
         availableChains: [],
-        initializeChains: (chainIds: number[]) => {
+        initializeChains: (
+          chainIds: number[],
+          maxChainToOrderConfig?: number,
+        ) => {
           set((state: ChainOrderState) => {
             const chainOrder = state.chainOrder.filter((chainId) =>
               chainIds.includes(chainId),
@@ -20,13 +23,18 @@ export const createChainOrderStore = ({ namePrefix }: PersistStoreProps) =>
             const chainsToAdd = chainIds.filter(
               (chainId) => !chainOrder.includes(chainId),
             );
-            if (chainOrder.length === maxChainToOrder || !chainsToAdd.length) {
+            const maxChainToOrderReal =
+              maxChainToOrderConfig ?? maxChainToOrder;
+            if (
+              chainOrder.length === maxChainToOrderReal ||
+              !chainsToAdd.length
+            ) {
               return {
                 availableChains: chainIds,
                 chainOrder,
               };
             }
-            const chainsToAddLength = maxChainToOrder - chainOrder.length;
+            const chainsToAddLength = maxChainToOrderReal - chainOrder.length;
             for (let index = 0; index < chainsToAddLength; index++) {
               chainOrder.push(chainsToAdd[index]);
             }
@@ -37,7 +45,7 @@ export const createChainOrderStore = ({ namePrefix }: PersistStoreProps) =>
           });
           return get().chainOrder;
         },
-        setChain: (chainId: number) => {
+        setChain: (chainId: number, maxChainToOrderConfig?: number) => {
           const state = get();
           if (
             state.chainOrder.includes(chainId) ||
@@ -48,7 +56,9 @@ export const createChainOrderStore = ({ namePrefix }: PersistStoreProps) =>
           set((state: ChainOrderState) => {
             const chainOrder = state.chainOrder.slice();
             chainOrder.unshift(chainId);
-            if (chainOrder.length > maxChainToOrder) {
+            if (
+              chainOrder.length > (maxChainToOrderConfig ?? maxChainToOrder)
+            ) {
               chainOrder.pop();
             }
             return {

@@ -4,6 +4,9 @@ export interface ChainOrderProps {
 }
 
 export interface ChainOrderState extends ChainOrderProps {
-  initializeChains(chainIds: number[]): number[];
-  setChain(chainId: number): void;
+  initializeChains(
+    chainIds: number[],
+    maxChainToOrderConfig?: number,
+  ): number[];
+  setChain(chainId: number, maxChainToOrderConfig?: number): void;
 }
